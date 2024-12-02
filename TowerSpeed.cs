@@ -16,28 +16,25 @@ namespace TowerSpeed;
 
 public class TowerSpeed : BloonsTD6Mod
 {
-    public class CustomStartingCashMod : BloonsTD6Mod
+    private const int CustomStartingCash = 100000; // Set your desired starting cash here
+
+    public override void OnApplicationStart()
     {
-        private const int CustomStartingCash = 100000; // Set your desired starting cash here
+        ModHelper.Msg<TowerSpeed>("Custom Starting Cash Mod loaded!");
+    }
 
-        public override void OnApplicationStart()
+    public override void OnNewGameModel(GameModel gameModel)
+    {
+        // Set the starting cash for the game
+        gameModel.cash = CustomStartingCash;
+
+        // Example of modifying other game elements if needed:
+        foreach (var weapon in gameModel.GetDescendants<WeaponModel>().ToList())
         {
-            ModHelper.Msg<CustomStartingCashMod>("Custom Starting Cash Mod loaded!");
+            weapon.rate = 0; // Modify weapon rate (example)
+            weapon.customStartCooldown = 0; // Reset weapon cooldown (example)
         }
 
-        public override void OnNewGameModel(GameModel gameModel)
-        {
-            // Set the starting cash for the game
-            gameModel.cash = CustomStartingCash;
-
-            // Example of modifying other game elements if needed:
-            foreach (var weapon in gameModel.GetDescendants<WeaponModel>().ToList())
-            {
-                weapon.rate = 0; // Modify weapon rate (example)
-                weapon.customStartCooldown = 0; // Reset weapon cooldown (example)
-            }
-
-            ModHelper.Msg<CustomStartingCashMod>($"Starting cash set to {CustomStartingCash}");
-        }
+        ModHelper.Msg<TowerSpeed>($"Starting cash set to {CustomStartingCash}");
     }
 }
