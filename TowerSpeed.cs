@@ -13,6 +13,14 @@ using Il2CppAssets.Scripts.Simulation.Objects;
 using Il2CppAssets.Scripts.Models.Powers;
 using Il2CppNinjaKiwi.GUTS.Models;
 using Il2CppAssets.Scripts.Unity.UI_New.InGame;
+using BTD_Mod_Helper.Api.Helpers;
+using Il2CppAssets.Scripts.Unity.UI_New.Popups;
+using BTD_Mod_Helper.Api.ModOptions;
+using UnityEngine;
+using System;
+using Il2CppAssets.Scripts.Unity;
+using Il2CppAssets.Scripts;
+using UnityEngine.InputSystem.Utilities;
 
 [assembly: MelonInfo(typeof(TowerSpeed.TowerSpeed), ModHelperData.Name, ModHelperData.Version, ModHelperData.RepoOwner)]
 [assembly: MelonGame("Ninja Kiwi", "BloonsTD6")]
@@ -22,14 +30,17 @@ namespace TowerSpeed
 
     public class TowerSpeed : BloonsTD6Mod
     {
-        private const int CustomStartingCash = 1000000000; // Set your desired starting cash here
+        private const int CustomStartingCash = 9999999; // Set your desired starting cash here
         private bool shiftZPressed = false;
 
         public override void OnApplicationStart()
         {
             ModHelper.Msg<TowerSpeed>("Custom Starting Cash Mod loaded!");
         }
-
+        private static readonly ModSettingHotkey SetCashHotkey = new(KeyCode.F6)
+        {
+            displayName = "Set Custom Cash Hotkey"
+        };
         public override void OnUpdate()
         {
             // Detect if Shift + Z is pressed
@@ -38,6 +49,15 @@ namespace TowerSpeed
                 shiftZPressed = !shiftZPressed; // Toggle the state
                 ModHelper.Msg<TowerSpeed>($"Shift + Z toggled: {shiftZPressed}");
             }
+
+            if (SetCashHotkey.JustPressed() && InGame.instance != null)
+            {
+                // Display popup to let the user set custom cash
+                PopupScreen.instance.ShowSetValuePopup("Set Custom Cash",
+                    "Set the custom cash amount you want.",
+                    new Action<int>(cash => SetCash(cash)), CustomStartingCash);
+            }
+
 
         }
 
@@ -58,6 +78,15 @@ namespace TowerSpeed
                 ModHelper.Msg<TowerSpeed>("Weapon modifications applied because Shift + Z is active.");
             }
 
+        }
+        private void SetCash(int cash)
+        {
+            if (InGame.instance != null)
+            {
+                GameModel gameModel = InGame.Bridge.Model;
+                gameModel.cash = cash; // Set the new custom cash value
+                ModHelper.Msg<TowerSpeed>($"Custom cash set to {cash}");
+            }
         }
     }
 }
