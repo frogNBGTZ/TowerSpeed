@@ -3,7 +3,7 @@ namespace TowerSpeed;
 public static class ModHelperData
 {
     public const string WorksOnVersion = "44.0";
-    public const string Version = "1.0.0";
+    public const string Version = "1.0.1";
     public const string Name = "TowerSpeed";
 
     public const string Description = "Testing as A beginner BTD6 modder";
