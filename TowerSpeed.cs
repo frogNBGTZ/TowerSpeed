@@ -25,6 +25,7 @@ using Il2CppAssets.Scripts.SimulationTests;
 using Il2CppAssets.Scripts.Models.Towers.Projectiles.Behaviors;
 using BTD_Mod_Helper.Api.Enums;
 using Il2CppTMPro;
+using Il2CppAssets.Scripts.Models.Knowledge;
 
 [assembly: MelonInfo(typeof(TowerSpeed.TowerSpeed), ModHelperData.Name, ModHelperData.Version, ModHelperData.RepoOwner)]
 [assembly: MelonGame("Ninja Kiwi", "BloonsTD6")]
@@ -38,27 +39,7 @@ namespace TowerSpeed
         private const int HealthChanger = 909090; // Change The Mex Health
         private bool shiftZPressed = false;
 
-        public override void OnNewGameModel(GameModel gameModel)
-        {
-            // Set the starting cash for the game
-            //gameModel.cash = CustomStartingCash;
-            gameModel.startingHealth = HealthChanger;
-            var cashh = gameModel.cash;
-            
-            ModHelper.Msg<TowerSpeed>($"Starting cash set to {CustomStartingCash}");
-            // Modify weapon behavior only if Shift + Z is active
-            if (shiftZPressed)
-            {
-                foreach (var weapon in gameModel.GetDescendants<WeaponModel>().ToList())
-                {
-                    weapon.rate = 0; // Modify weapon rate (example)
-                    weapon.customStartCooldown = 0; // Reset weapon cooldown (example)
-                }
-
-                ModHelper.Msg<TowerSpeed>("Weapon modifications applied because Shift + Z is active.");
-            }
-
-        }
+        
         private static readonly ModSettingHotkey OpenGUI = new(KeyCode.F10)
         {
             displayName = "Multicash Hotkey"
@@ -257,15 +238,53 @@ namespace TowerSpeed
 
                 displayOpen = true;
             }
-            // Detect if Shift + Z is pressed
+            // Detect if Shift + Z is pressed and then add cash and health also active and disactive weapon and cooldown rate.
             if (Keyboard.current != null && Keyboard.current.leftShiftKey.isPressed && Keyboard.current.zKey.wasPressedThisFrame)
             {
                 shiftZPressed = !shiftZPressed; // Toggle the state
+                GameModel gameModel = Game.instance.model;
+                foreach (var weapon in gameModel.GetDescendants<WeaponModel>().ToList())
+                {
+                    weapon.rate = 0; // Modify weapon rate (example)
+                    weapon.customStartCooldown = 0; // Reset weapon cooldown (example)
+                }
                 ModHelper.Msg<TowerSpeed>($"Shift + Z toggled: {shiftZPressed}");
+                InGameExt.AddCash(InGame.instance, 100000);
+                InGameExt.AddHealth(InGame.instance, 100000);
+            }
+            // give you Trophies
+            if (Keyboard.current != null && Keyboard.current.leftShiftKey.isPressed && Keyboard.current.xKey.wasPressedThisFrame)
+            {
+                GameExt.GetBtd6Player(Game.instance).GainTrophies(10000, "event", null);
+                ModHelper.Msg<TowerSpeed>($"added 10K trophies");
+            }
+            // Give you 100K playerxp
+            if (Keyboard.current != null && Keyboard.current.leftShiftKey.isPressed && Keyboard.current.cKey.wasPressedThisFrame)
+            {
+                GameExt.GetBtd6Player(Game.instance).GainPlayerXP(100000);
+                ModHelper.Msg<TowerSpeed>($"added 100K XP");
+            }
+            // Knowledge unlocker
+            if (Keyboard.current != null && Keyboard.current.leftShiftKey.isPressed && Keyboard.current.aKey.wasPressedThisFrame)
+            {
+                GameModel gameModel = Game.instance.model;
+                KnowledgeModel[] models = gameModel.allKnowledge.ToArray();
+                foreach (KnowledgeModel model in models)
+                {
+                    string m = model.name.Remove(0, 15);
+                    if (GameExt.GetBtd6Player(Game.instance).HasKnowledge(m))
+                        MelonLogger.Msg($"{m} is already unlocked");
+                    else
+                    {
+                        MelonLogger.Msg($"unlocked {m}");
+                        GameExt.GetBtd6Player(Game.instance).AcquireKnowledge(m);
+                    }
+                }
+                ModHelper.Msg<TowerSpeed>($"added Monkey Knoledge");
             }
         }
 
-
+        // Class for the Multipliers 
         [HarmonyLib.HarmonyPatch(typeof(Simulation), "AddCash")]
         public class MultiplyCash
         {

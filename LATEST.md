@@ -1,4 +1,6 @@
-- Added Custom Cash
 - Added Hotkeys for the ratespeed
 - More Bug Fix
-- Able To change the mulitiplir
+- Able To change the Multipliers
+- Add player XP unlocker
+- Trophis and Knowlegde Unlocker
+- Minor Bug Fix
