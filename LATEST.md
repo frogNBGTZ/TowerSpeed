@@ -1,3 +1,4 @@
 - Added Custom Cash
 - Added Hotkeys for the ratespeed
 - bug fix
+- and more
