@@ -1,4 +1,4 @@
 - Added Custom Cash
 - Added Hotkeys for the ratespeed
-- bug fix
-- and more
+- More Bug Fix
+- Able To change the mulitiplir

@@ -3,7 +3,7 @@ namespace TowerSpeed;
 public static class ModHelperData
 {
     public const string WorksOnVersion = "44.0";
-    public const string Version = "1.0.4";
+    public const string Version = "1.0.5";
     public const string Name = "TowerSpeed";
 
     public const string Description = "HotKeys and More Cash and many more";
