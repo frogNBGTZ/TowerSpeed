@@ -30,7 +30,7 @@ namespace TowerSpeed
 
     public class TowerSpeed : BloonsTD6Mod
     {
-        private const int CustomStartingCash = 9999999; // Set your desired starting cash here
+        private const int CustomStartingCash = default; // Set your desired starting cash here
         private bool shiftZPressed = false;
 
         public override void OnApplicationStart()
