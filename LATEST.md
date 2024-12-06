@@ -1,4 +1,1 @@
-- Able To change the Multipliers
-- Add player XP unlocker
-- monkey Money
-- Minor Bug Fix
+- Bug Fix

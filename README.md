@@ -5,11 +5,11 @@
 </a>
 TowerSpeed
 </h1>
-
-This Mod lets you do Severl Things:
-1.Give you the Abillity to give you self custom amount of Player XP
-2.Give you the Abillity to give you self custom amount of Monkey Money
-3.Give you the Abillity to give you self custom amount of ingame cash and health
+This Mod lets you do Severl Things:                           
+1.Give you the Abillity to give you self custom amount of Player XP                   
+2.Give you the Abillity to give you self custom amount of Monkey Money              
+3.Give you the Abillity to give you self custom amount of ingame cash and health             
 4.You are able to change the cash multipliers of servel things such as: Global Multiplier, Tower Selling and etc.
+
 
 [![Requires BTD6 Mod Helper](https://raw.githubusercontent.com/gurrenm3/BTD-Mod-Helper/master/banner.png)](https://github.com/gurrenm3/BTD-Mod-Helper#readme)

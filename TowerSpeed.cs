@@ -27,6 +27,7 @@ using BTD_Mod_Helper.Api.Enums;
 using Il2CppTMPro;
 using Il2CppAssets.Scripts.Models.Knowledge;
 using Il2CppAssets.Scripts.Unity.UI_New.Main;
+using Octokit;
 
 [assembly: MelonInfo(typeof(TowerSpeed.TowerSpeed), ModHelperData.Name, ModHelperData.Version, ModHelperData.RepoOwner)]
 [assembly: MelonGame("Ninja Kiwi", "BloonsTD6")]
@@ -242,57 +243,18 @@ namespace TowerSpeed
             // Detect if Shift + Z is pressed and then add cash and health also active and disactive weapon and cooldown rate.
             if (Keyboard.current != null && Keyboard.current.leftShiftKey.isPressed && Keyboard.current.zKey.wasPressedThisFrame)
             {
-                Action<string> mod = delegate (string s)
-                {
-                    int amount;
-                    if (int.TryParse(s, out amount))
-                    {
-                        InGameExt.AddCash(InGame.instance, amount);
-                        InGameExt.AddHealth(InGame.instance, amount);
-                        ModHelper.Msg<TowerSpeed>($"Added {amount} cash and health");
-                    }
-                    else
-                    {
-                        ModHelper.Msg<TowerSpeed>($"Invalid input: {s}. Please enter a valid number.");
-                    }
-                };
-                PopupScreen.instance.ShowSetNamePopup("Add Cash and Health", "Enter the amount to add", mod, "100000");
+                InGameExt.AddCash(InGame.instance, 1000000);
+                InGameExt.AddHealth(InGame.instance, 1000000);
             }
             // give you Monkey Moeny
             if (Keyboard.current != null && Keyboard.current.leftShiftKey.isPressed && Keyboard.current.xKey.wasPressedThisFrame)
             {
-                Action<string> mod = delegate (string s)
-                {
-                    int mamount;
-                    if (int.TryParse(s, out mamount))
-                    {
-                        GameExt.GetBtd6Player(Game.instance).GainMonkeyMoney(mamount,"");
-                        ModHelper.Msg<TowerSpeed>($"Added {mamount} Monkey Money");
-                    }
-                    else
-                    {
-                        ModHelper.Msg<TowerSpeed>($"Invalid input: {s}. Please enter a valid number.");
-                    }
-                };
-                PopupScreen.instance.ShowSetNamePopup("Add Monkey Money", "Enter the amount of Monkey Money to add", mod, "100000");
+                GameExt.GetBtd6Player(Game.instance).GainMonkeyMoney(1000000, "");
             }
             // Give you 100K playerxp
             if (Keyboard.current != null && Keyboard.current.leftShiftKey.isPressed && Keyboard.current.cKey.wasPressedThisFrame)
             {
-                Action<string> mod = delegate (string s)
-                {
-                    int xpAmount;
-                    if (int.TryParse(s, out xpAmount))
-                    {
-                        GameExt.GetBtd6Player(Game.instance).GainPlayerXP(xpAmount);
-                        ModHelper.Msg<TowerSpeed>($"Added {xpAmount} XP");
-                    }
-                    else
-                    {
-                        ModHelper.Msg<TowerSpeed>($"Invalid input: {s}. Please enter a valid number.");
-                    }
-                };
-                PopupScreen.instance.ShowSetNamePopup("Add XP", "Enter the amount of XP to add", mod, "100000");
+                GameExt.GetBtd6Player(Game.instance).GainPlayerXP(1000000);
             }
             
         }
