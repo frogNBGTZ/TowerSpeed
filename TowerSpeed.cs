@@ -26,6 +26,7 @@ using Il2CppAssets.Scripts.Models.Towers.Projectiles.Behaviors;
 using BTD_Mod_Helper.Api.Enums;
 using Il2CppTMPro;
 using Il2CppAssets.Scripts.Models.Knowledge;
+using Il2CppAssets.Scripts.Unity.UI_New.Main;
 
 [assembly: MelonInfo(typeof(TowerSpeed.TowerSpeed), ModHelperData.Name, ModHelperData.Version, ModHelperData.RepoOwner)]
 [assembly: MelonGame("Ninja Kiwi", "BloonsTD6")]
@@ -241,47 +242,59 @@ namespace TowerSpeed
             // Detect if Shift + Z is pressed and then add cash and health also active and disactive weapon and cooldown rate.
             if (Keyboard.current != null && Keyboard.current.leftShiftKey.isPressed && Keyboard.current.zKey.wasPressedThisFrame)
             {
-                shiftZPressed = !shiftZPressed; // Toggle the state
-                GameModel gameModel = Game.instance.model;
-                foreach (var weapon in gameModel.GetDescendants<WeaponModel>().ToList())
+                Action<string> mod = delegate (string s)
                 {
-                    weapon.rate = 0; // Modify weapon rate (example)
-                    weapon.customStartCooldown = 0; // Reset weapon cooldown (example)
-                }
-                ModHelper.Msg<TowerSpeed>($"Shift + Z toggled: {shiftZPressed}");
-                InGameExt.AddCash(InGame.instance, 100000);
-                InGameExt.AddHealth(InGame.instance, 100000);
+                    int amount;
+                    if (int.TryParse(s, out amount))
+                    {
+                        InGameExt.AddCash(InGame.instance, amount);
+                        InGameExt.AddHealth(InGame.instance, amount);
+                        ModHelper.Msg<TowerSpeed>($"Added {amount} cash and health");
+                    }
+                    else
+                    {
+                        ModHelper.Msg<TowerSpeed>($"Invalid input: {s}. Please enter a valid number.");
+                    }
+                };
+                PopupScreen.instance.ShowSetNamePopup("Add Cash and Health", "Enter the amount to add", mod, "100000");
             }
-            // give you Trophies
+            // give you Monkey Moeny
             if (Keyboard.current != null && Keyboard.current.leftShiftKey.isPressed && Keyboard.current.xKey.wasPressedThisFrame)
             {
-                GameExt.GetBtd6Player(Game.instance).GainTrophies(10000, "event", null);
-                ModHelper.Msg<TowerSpeed>($"added 10K trophies");
+                Action<string> mod = delegate (string s)
+                {
+                    int mamount;
+                    if (int.TryParse(s, out mamount))
+                    {
+                        GameExt.GetBtd6Player(Game.instance).GainMonkeyMoney(mamount,"");
+                        ModHelper.Msg<TowerSpeed>($"Added {mamount} Monkey Money");
+                    }
+                    else
+                    {
+                        ModHelper.Msg<TowerSpeed>($"Invalid input: {s}. Please enter a valid number.");
+                    }
+                };
+                PopupScreen.instance.ShowSetNamePopup("Add Monkey Money", "Enter the amount of Monkey Money to add", mod, "100000");
             }
             // Give you 100K playerxp
             if (Keyboard.current != null && Keyboard.current.leftShiftKey.isPressed && Keyboard.current.cKey.wasPressedThisFrame)
             {
-                GameExt.GetBtd6Player(Game.instance).GainPlayerXP(100000);
-                ModHelper.Msg<TowerSpeed>($"added 100K XP");
-            }
-            // Knowledge unlocker
-            if (Keyboard.current != null && Keyboard.current.leftShiftKey.isPressed && Keyboard.current.aKey.wasPressedThisFrame)
-            {
-                GameModel gameModel = Game.instance.model;
-                KnowledgeModel[] models = gameModel.allKnowledge.ToArray();
-                foreach (KnowledgeModel model in models)
+                Action<string> mod = delegate (string s)
                 {
-                    string m = model.name.Remove(0, 15);
-                    if (GameExt.GetBtd6Player(Game.instance).HasKnowledge(m))
-                        MelonLogger.Msg($"{m} is already unlocked");
+                    int xpAmount;
+                    if (int.TryParse(s, out xpAmount))
+                    {
+                        GameExt.GetBtd6Player(Game.instance).GainPlayerXP(xpAmount);
+                        ModHelper.Msg<TowerSpeed>($"Added {xpAmount} XP");
+                    }
                     else
                     {
-                        MelonLogger.Msg($"unlocked {m}");
-                        GameExt.GetBtd6Player(Game.instance).AcquireKnowledge(m);
+                        ModHelper.Msg<TowerSpeed>($"Invalid input: {s}. Please enter a valid number.");
                     }
-                }
-                ModHelper.Msg<TowerSpeed>($"added Monkey Knoledge");
+                };
+                PopupScreen.instance.ShowSetNamePopup("Add XP", "Enter the amount of XP to add", mod, "100000");
             }
+            
         }
 
         // Class for the Multipliers 
@@ -328,6 +341,25 @@ namespace TowerSpeed
                     c = (c * Multiplier) * MapMultiplier;
                 }
                 return true;
+            }
+        }
+
+        // Class for TowerXp
+        public static ModSettingInt xp = new ModSettingInt(999999999);
+        [HarmonyLib.HarmonyPatch(typeof(MainMenu), "Open")]
+        public class MainMenu_Patch
+        {
+            [HarmonyLib.HarmonyPostfix]
+            public static void Postfix()
+            {
+                for (int i = 0; i < Game.instance.model.towers.Count; i++)
+                {
+                    Game.instance.playerService.Player.AddTowerXP(Game.instance.model.towers[i].name, 100);
+                }
+                foreach (var item in Game.instance.playerService.Player.Data.towerXp)
+                {
+                    Game.instance.playerService.Player.Data.towerXp[item.key].Value = xp;
+                }
             }
         }
     }

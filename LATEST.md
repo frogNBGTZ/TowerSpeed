@@ -1,6 +1,4 @@
-- Added Hotkeys for the ratespeed
-- More Bug Fix
 - Able To change the Multipliers
 - Add player XP unlocker
-- Trophis and Knowlegde Unlocker
+- monkey Money
 - Minor Bug Fix
